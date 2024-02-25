@@ -17,6 +17,20 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "params",
 					Short:     "Shows the parameters of the module",
 				},
+				{
+					RpcMethod:      "ShowItem",
+					Use:            "show-item [id]",
+					Short:          "Query show-item",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
+				},
+
+				{
+					RpcMethod:      "ListItem",
+					Use:            "list-item",
+					Short:          "Query list-item",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
@@ -27,6 +41,18 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				{
 					RpcMethod: "UpdateParams",
 					Skip:      true, // skipped because authority gated
+				},
+				{
+					RpcMethod:      "CreateItem",
+					Use:            "create-item [desc] [priority]",
+					Short:          "Send a create-item tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "desc"}, {ProtoField: "priority"}},
+				},
+				{
+					RpcMethod:      "DeleteItem",
+					Use:            "delete-item [id]",
+					Short:          "Send a delete-item tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
 				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},

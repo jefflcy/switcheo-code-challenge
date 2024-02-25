@@ -19262,6 +19262,220 @@ paths:
               parameters.
       tags:
         - Msg
+  /todolist/todolist/list_item:
+    get:
+      summary: Queries a list of ListItem items.
+      operationId: TodolistTodolistQuery_ListItem
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              item:
+                type: object
+                properties:
+                  desc:
+                    type: string
+                  priority:
+                    type: string
+                    format: uint64
+                  creator:
+                    type: string
+                  id:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /todolist/todolist/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: TodolistTodolistQuery_Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /todolist/todolist/show_item/{id}:
+    get:
+      summary: Queries a list of ShowItem items.
+      operationId: TodolistTodolistQuery_ShowItem
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              item:
+                type: object
+                properties:
+                  desc:
+                    type: string
+                  priority:
+                    type: string
+                    format: uint64
+                  creator:
+                    type: string
+                  id:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /todolist.todolist.Msg/CreateItem:
+    post:
+      operationId: TodolistTodolistMsg_CreateItem
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              desc:
+                type: string
+              priority:
+                type: string
+                format: uint64
+      tags:
+        - Msg
+  /todolist.todolist.Msg/DeleteItem:
+    post:
+      operationId: TodolistTodolistMsg_DeleteItem
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              id:
+                type: string
+                format: uint64
+      tags:
+        - Msg
   /todolist.todolist.Msg/UpdateParams:
     post:
       summary: |-
@@ -19310,50 +19524,11 @@ paths:
                   authority is the address that controls the module (defaults to
                   x/gov unless overwritten).
               params:
-                description: |-
-                  params defines the module parameters to update.
-
-                  NOTE: All parameters must be supplied.
+                description: 'NOTE: All parameters must be supplied.'
                 type: object
             description: MsgUpdateParams is the Msg/UpdateParams request type.
       tags:
         - Msg
-  /todolist/todolist/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: TodolistTodolistQuery_Params
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
 definitions:
   cosmos.auth.v1beta1.MsgUpdateParams:
     type: object
@@ -27094,6 +27269,87 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  todolist.todolist.Item:
+    type: object
+    properties:
+      desc:
+        type: string
+      priority:
+        type: string
+        format: uint64
+      creator:
+        type: string
+      id:
+        type: string
+        format: uint64
+  todolist.todolist.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  todolist.todolist.QueryListItemResponse:
+    type: object
+    properties:
+      item:
+        type: object
+        properties:
+          desc:
+            type: string
+          priority:
+            type: string
+            format: uint64
+          creator:
+            type: string
+          id:
+            type: string
+            format: uint64
+  todolist.todolist.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  todolist.todolist.QueryShowItemResponse:
+    type: object
+    properties:
+      item:
+        type: object
+        properties:
+          desc:
+            type: string
+          priority:
+            type: string
+            format: uint64
+          creator:
+            type: string
+          id:
+            type: string
+            format: uint64
+  todolist.todolist.MsgCreateItem:
+    type: object
+    properties:
+      creator:
+        type: string
+      desc:
+        type: string
+      priority:
+        type: string
+        format: uint64
+  todolist.todolist.MsgCreateItemResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  todolist.todolist.MsgDeleteItem:
+    type: object
+    properties:
+      creator:
+        type: string
+      id:
+        type: string
+        format: uint64
+  todolist.todolist.MsgDeleteItemResponse:
+    type: object
   todolist.todolist.MsgUpdateParams:
     type: object
     properties:
@@ -27103,10 +27359,7 @@ definitions:
           authority is the address that controls the module (defaults to x/gov
           unless overwritten).
       params:
-        description: |-
-          params defines the module parameters to update.
-
-          NOTE: All parameters must be supplied.
+        description: 'NOTE: All parameters must be supplied.'
         type: object
     description: MsgUpdateParams is the Msg/UpdateParams request type.
   todolist.todolist.MsgUpdateParamsResponse:
@@ -27114,13 +27367,3 @@ definitions:
     description: |-
       MsgUpdateParamsResponse defines the response structure for executing a
       MsgUpdateParams message.
-  todolist.todolist.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  todolist.todolist.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
