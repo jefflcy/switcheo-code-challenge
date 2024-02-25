@@ -47,7 +47,7 @@ message QueryShowItemRequest {
 }
 
 message QueryShowItemResponse {
-  Item item = 1;
+  Item item = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryListItemRequest {}

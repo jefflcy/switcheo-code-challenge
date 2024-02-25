@@ -19476,6 +19476,51 @@ paths:
                 format: uint64
       tags:
         - Msg
+  /todolist.todolist.Msg/UpdateItem:
+    post:
+      operationId: TodolistTodolistMsg_UpdateItem
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              desc:
+                type: string
+              priority:
+                type: string
+                format: uint64
+              id:
+                type: string
+                format: uint64
+      tags:
+        - Msg
   /todolist.todolist.Msg/UpdateParams:
     post:
       summary: |-
@@ -27349,6 +27394,21 @@ definitions:
         type: string
         format: uint64
   todolist.todolist.MsgDeleteItemResponse:
+    type: object
+  todolist.todolist.MsgUpdateItem:
+    type: object
+    properties:
+      creator:
+        type: string
+      desc:
+        type: string
+      priority:
+        type: string
+        format: uint64
+      id:
+        type: string
+        format: uint64
+  todolist.todolist.MsgUpdateItemResponse:
     type: object
   todolist.todolist.MsgUpdateParams:
     type: object

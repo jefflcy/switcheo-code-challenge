@@ -8,7 +8,6 @@ package todolist
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,6 +22,7 @@ const (
 	Msg_UpdateParams_FullMethodName = "/todolist.todolist.Msg/UpdateParams"
 	Msg_CreateItem_FullMethodName   = "/todolist.todolist.Msg/CreateItem"
 	Msg_DeleteItem_FullMethodName   = "/todolist.todolist.Msg/DeleteItem"
+	Msg_UpdateItem_FullMethodName   = "/todolist.todolist.Msg/UpdateItem"
 )
 
 // MsgClient is the client API for Msg service.
@@ -34,6 +34,7 @@ type MsgClient interface {
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CreateItem(ctx context.Context, in *MsgCreateItem, opts ...grpc.CallOption) (*MsgCreateItemResponse, error)
 	DeleteItem(ctx context.Context, in *MsgDeleteItem, opts ...grpc.CallOption) (*MsgDeleteItemResponse, error)
+	UpdateItem(ctx context.Context, in *MsgUpdateItem, opts ...grpc.CallOption) (*MsgUpdateItemResponse, error)
 }
 
 type msgClient struct {
@@ -71,6 +72,15 @@ func (c *msgClient) DeleteItem(ctx context.Context, in *MsgDeleteItem, opts ...g
 	return out, nil
 }
 
+func (c *msgClient) UpdateItem(ctx context.Context, in *MsgUpdateItem, opts ...grpc.CallOption) (*MsgUpdateItemResponse, error) {
+	out := new(MsgUpdateItemResponse)
+	err := c.cc.Invoke(ctx, Msg_UpdateItem_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type MsgServer interface {
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	CreateItem(context.Context, *MsgCreateItem) (*MsgCreateItemResponse, error)
 	DeleteItem(context.Context, *MsgDeleteItem) (*MsgDeleteItemResponse, error)
+	UpdateItem(context.Context, *MsgUpdateItem) (*MsgUpdateItemResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -95,6 +106,9 @@ func (UnimplementedMsgServer) CreateItem(context.Context, *MsgCreateItem) (*MsgC
 }
 func (UnimplementedMsgServer) DeleteItem(context.Context, *MsgDeleteItem) (*MsgDeleteItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteItem not implemented")
+}
+func (UnimplementedMsgServer) UpdateItem(context.Context, *MsgUpdateItem) (*MsgUpdateItemResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateItem not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -163,6 +177,24 @@ func _Msg_DeleteItem_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateItem)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateItem_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateItem(ctx, req.(*MsgUpdateItem))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -181,6 +213,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteItem",
 			Handler:    _Msg_DeleteItem_Handler,
+		},
+		{
+			MethodName: "UpdateItem",
+			Handler:    _Msg_UpdateItem_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

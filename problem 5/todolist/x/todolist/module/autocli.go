@@ -54,6 +54,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a delete-item tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
 				},
+				{
+					RpcMethod:      "UpdateItem",
+					Use:            "update-item [desc] [priority] [id]",
+					Short:          "Send a update-item tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "desc"}, {ProtoField: "priority"}, {ProtoField: "id"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},

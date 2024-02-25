@@ -10,6 +10,33 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// Get item by ID
+func (k Keeper) GetItem(ctx sdk.Context, id uint64) (val types.Item, found bool) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.ItemKey))
+	b := store.Get(GetItemIDBytes(id))
+	if b == nil {
+		return val, false
+	}
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+// Set item with item to update the item in store
+func (k Keeper) SetItem(ctx sdk.Context, post types.Item) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.ItemKey))
+	b := k.cdc.MustMarshal(&post)
+	store.Set(GetItemIDBytes(post.Id), b)
+}
+
+// Delete item by ID
+func (k Keeper) RemoveItem(ctx sdk.Context, id uint64) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.ItemKey))
+	store.Delete(GetItemIDBytes(id))
+}
+
 // Append items to the store
 func (k Keeper) AppendItem(ctx sdk.Context, item types.Item) uint64 {
 	count := k.GetItemCount(ctx)
