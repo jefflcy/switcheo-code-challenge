@@ -1,0 +1,12 @@
+syntax = "proto3";
+package todolist.todolist;
+
+option go_package = "todolist/x/todolist/types";
+
+message Item {
+  
+  string desc = 1; 
+  uint64 priority = 2; 
+  string creator = 3; 
+  uint64 id = 4; 
+}
