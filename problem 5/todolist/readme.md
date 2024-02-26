@@ -18,7 +18,7 @@ func NewMsgUpdateItem(creator string, desc string, priority uint64, id uint64) *
 	return &MsgUpdateItem{
 		Creator:  creator,
 		Desc:     desc,
-		Id:       id,
+		Id:       id, // removed the "priority" field
 	}
 }
 ```
