@@ -23,11 +23,11 @@ func (k Keeper) GetItem(ctx sdk.Context, id uint64) (val types.Item, found bool)
 }
 
 // Set item with item to update the item in store
-func (k Keeper) SetItem(ctx sdk.Context, post types.Item) {
+func (k Keeper) SetItem(ctx sdk.Context, item types.Item) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.ItemKey))
-	b := k.cdc.MustMarshal(&post)
-	store.Set(GetItemIDBytes(post.Id), b)
+	b := k.cdc.MustMarshal(&item)
+	store.Set(GetItemIDBytes(item.Id), b)
 }
 
 // Delete item by ID
