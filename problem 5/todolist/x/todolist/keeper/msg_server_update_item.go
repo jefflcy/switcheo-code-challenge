@@ -14,10 +14,9 @@ import (
 func (k msgServer) UpdateItem(goCtx context.Context, msg *types.MsgUpdateItem) (*types.MsgUpdateItemResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	var item = types.Item{
-		Creator:  msg.Creator,
-		Id:       msg.Id,
-		Desc:     msg.Desc,
-		Priority: msg.Priority,
+		Creator: msg.Creator,
+		Id:      msg.Id,
+		Desc:    msg.Desc,
 	}
 	val, found := k.GetItem(ctx, msg.Id)
 	if !found {

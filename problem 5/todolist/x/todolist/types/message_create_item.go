@@ -10,9 +10,8 @@ var _ sdk.Msg = &MsgCreateItem{}
 
 func NewMsgCreateItem(creator string, desc string, priority uint64) *MsgCreateItem {
 	return &MsgCreateItem{
-		Creator:  creator,
-		Desc:     desc,
-		Priority: priority,
+		Creator: creator,
+		Desc:    desc,
 	}
 }
 

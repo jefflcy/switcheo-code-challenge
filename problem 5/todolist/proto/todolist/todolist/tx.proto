@@ -62,8 +62,7 @@ message MsgUpdateItem {
   option (cosmos.msg.v1.signer) = "creator";
   string creator  = 1;
   string desc     = 2;
-  uint64 priority = 3;
-  uint64 id       = 4;
+  uint64 id       = 3;
 }
 
 message MsgUpdateItemResponse {}

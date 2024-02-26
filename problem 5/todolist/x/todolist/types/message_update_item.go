@@ -10,10 +10,9 @@ var _ sdk.Msg = &MsgUpdateItem{}
 
 func NewMsgUpdateItem(creator string, desc string, priority uint64, id uint64) *MsgUpdateItem {
 	return &MsgUpdateItem{
-		Creator:  creator,
-		Desc:     desc,
-		Priority: priority,
-		Id:       id,
+		Creator: creator,
+		Desc:    desc,
+		Id:      id,
 	}
 }
 

@@ -2,83 +2,74 @@
 
 **todolist** is a basic practical CRUD blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
 
-## Get started
+## Consensus-Breaking Change
+
+**In** `x/todolist/types/message_create_item.go` & `x/todolist/types/message_update_item.go`:
 
 ```
-ignite chain serve
+func NewMsgCreateItem(creator string, desc string, priority uint64) *MsgCreateItem {
+	return &MsgCreateItem{
+		Creator:  creator,
+		Desc:     desc, // removed the "priority" field
+	}
+}
+
+func NewMsgUpdateItem(creator string, desc string, priority uint64, id uint64) *MsgUpdateItem {
+	return &MsgUpdateItem{
+		Creator:  creator,
+		Desc:     desc,
+		Id:       id,
+	}
+}
 ```
 
-`serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
-
-**Make sure your go/bin folder is on our PATH or the shell may not recognize the command.**
-
-For bash shell,
+**In** `x/todolist/keeper/msg_server_create_item.go` & `x/todolist/keeper/msg_server_update_item.go`:
 
 ```
-nano .bash_profile
-#add this line of code to your profile
-export PATH="$HOME/go/bin:$PATH"
-```
+// In CreateItem
+	var item = types.Item{
+		Creator: msg.Creator,
+		Desc:    msg.Desc, // removed the "priority" field
+	}
 
-For mac zsh,
-
-```
-nano .bash_profile
-#add this line of code to your profile
-export PATH="$HOME/go/bin:$PATH"
-```
-
-## CRUD functionalities using CLI
-
-### Create a todolist item by Alice
-
-- Structure:
-  `[blockchain daemon] [tx type] [module name] [msg] [item desc] [item priority] [from flag] [chain id flag]`
+// In UpdateItem
+var item = types.Item{
+		Creator: msg.Creator,
+		Id:      msg.Id,
+		Desc:    msg.Desc, // removed the "priority" field
+	}
 
 ```
-todolistd tx todolist create-item "Code up solution" 3 --from alice --chain-id todolist
-```
 
-### Show the item (using item id)
-
-- Structure:
-  `[blockchain daemon] [tx type] [module name] [msg] [item id]`
+**In** `proto/todolist/tx.proto`:
 
 ```
-todolistd q todolist show-item 0 // show the first item in the store
+message MsgCreateItem {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator  = 1;
+  string desc     = 2; //removed the "priority" field
+}
+
+message MsgUpdateItem {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator  = 1;
+  string desc     = 2;
+  uint64 id       = 3; //removed the "priority" field
+}
 ```
 
-### Update the item (rewrite all params, using item id)
+- What does it mean to break consensus?
 
-- Structure:
-  `[blockchain daemon] [tx type] [module name] [msg] [new item desc] [new item priority] [item id] [from flag] [chain id flag]`
+Breaking consensus in a blockchain context means making a change that is not backwards compatible as it would require all nodes to upgrade to the new version to continue participating in the network. Consensus is the process in which all nodes in the network agree on the validity of transactions and the state of the blockchain.
 
-```
-todolistd tx todolist update-item "Wash the red car" 2 0 --from alice --chain-id todolist
-```
+That is why if there is a change introduced that affects this agreement process, like altering the transaction structure, and if some nodes adopt this change while others do not, those nodes will no longer be able to agree on a unified state of the ledger.
 
-### Delete the item (using item id)
+This disagreement can then lead to forks in a blockchain, where different nodes have different views of the transaction history and state.
 
-- Structure:
-  `[blockchain daemon] [tx type] [module name] [msg] [item id] [from flag] [chain id flag]`
+- Why does my change break consensus?
 
-```
-todolistd tx todolist delete-item 0 --from alice --chain-id todolist
-```
+The removal of the "priority" field from the create-item/update-item transaction would break consensus because the past transactions that were considered valid would now be invalid according to this new code.
 
-### List the stored todolist items
+Nodes running the old version expect the "priority" field to be present and may reject transactions without it, while nodes that have updated would consider those same transactions valid.
 
-- Structure:
-  `[blockchain daemon] [tx type] [module name] [msg]`
-
-To show all items:
-
-```
-todolistd q todolist list-all-items
-```
-
-To show just the **highest priority** item (largest priority int):
-
-```
-todolistd q todolist list-item
-```
+As a result, the network would split into two incompatible versions, with each set of nodes having a different view of the blockchain's state. This is a consensus-breaking change because it requires all nodes to update synchronously to maintain a unified network. If this coordinated update does not happen, it could lead to a network fork.

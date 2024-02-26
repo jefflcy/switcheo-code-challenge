@@ -13,9 +13,8 @@ func (k msgServer) CreateItem(goCtx context.Context, msg *types.MsgCreateItem) (
 
 	// Handling the message
 	var item = types.Item{
-		Creator:  msg.Creator,
-		Desc:     msg.Desc,
-		Priority: msg.Priority,
+		Creator: msg.Creator,
+		Desc:    msg.Desc,
 	}
 	id := k.AppendItem(
 		ctx,
