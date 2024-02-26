@@ -31,6 +31,12 @@ service Query {
     option (google.api.http).get = "/todolist/todolist/list_item";
   
   }
+  
+  // Queries a list of ListAllItems items.
+  rpc ListAllItems (QueryListAllItemsRequest) returns (QueryListAllItemsResponse) {
+    option (google.api.http).get = "/todolist/todolist/list_all_items";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -54,5 +60,14 @@ message QueryListItemRequest {}
 
 message QueryListItemResponse {
   Item item = 1;
+}
+
+message QueryListAllItemsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryListAllItemsResponse {
+  repeated Item item = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

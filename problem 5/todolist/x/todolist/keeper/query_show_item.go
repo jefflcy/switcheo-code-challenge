@@ -21,5 +21,5 @@ func (k Keeper) ShowItem(goCtx context.Context, req *types.QueryShowItemRequest)
 	if !found {
 		return nil, sdkerrors.ErrKeyNotFound
 	}
-	return &types.QueryShowItemResponse{Item: &item}, nil
+	return &types.QueryShowItemResponse{Item: item}, nil
 }

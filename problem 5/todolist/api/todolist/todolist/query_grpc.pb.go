@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName   = "/todolist.todolist.Query/Params"
-	Query_ShowItem_FullMethodName = "/todolist.todolist.Query/ShowItem"
-	Query_ListItem_FullMethodName = "/todolist.todolist.Query/ListItem"
+	Query_Params_FullMethodName       = "/todolist.todolist.Query/Params"
+	Query_ShowItem_FullMethodName     = "/todolist.todolist.Query/ShowItem"
+	Query_ListItem_FullMethodName     = "/todolist.todolist.Query/ListItem"
+	Query_ListAllItems_FullMethodName = "/todolist.todolist.Query/ListAllItems"
 )
 
 // QueryClient is the client API for Query service.
@@ -34,6 +35,8 @@ type QueryClient interface {
 	ShowItem(ctx context.Context, in *QueryShowItemRequest, opts ...grpc.CallOption) (*QueryShowItemResponse, error)
 	// Queries a list of ListItem items.
 	ListItem(ctx context.Context, in *QueryListItemRequest, opts ...grpc.CallOption) (*QueryListItemResponse, error)
+	// Queries a list of ListAllItems items.
+	ListAllItems(ctx context.Context, in *QueryListAllItemsRequest, opts ...grpc.CallOption) (*QueryListAllItemsResponse, error)
 }
 
 type queryClient struct {
@@ -71,6 +74,15 @@ func (c *queryClient) ListItem(ctx context.Context, in *QueryListItemRequest, op
 	return out, nil
 }
 
+func (c *queryClient) ListAllItems(ctx context.Context, in *QueryListAllItemsRequest, opts ...grpc.CallOption) (*QueryListAllItemsResponse, error) {
+	out := new(QueryListAllItemsResponse)
+	err := c.cc.Invoke(ctx, Query_ListAllItems_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -81,6 +93,8 @@ type QueryServer interface {
 	ShowItem(context.Context, *QueryShowItemRequest) (*QueryShowItemResponse, error)
 	// Queries a list of ListItem items.
 	ListItem(context.Context, *QueryListItemRequest) (*QueryListItemResponse, error)
+	// Queries a list of ListAllItems items.
+	ListAllItems(context.Context, *QueryListAllItemsRequest) (*QueryListAllItemsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -96,6 +110,9 @@ func (UnimplementedQueryServer) ShowItem(context.Context, *QueryShowItemRequest)
 }
 func (UnimplementedQueryServer) ListItem(context.Context, *QueryListItemRequest) (*QueryListItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListItem not implemented")
+}
+func (UnimplementedQueryServer) ListAllItems(context.Context, *QueryListAllItemsRequest) (*QueryListAllItemsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAllItems not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -164,6 +181,24 @@ func _Query_ListItem_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ListAllItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryListAllItemsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ListAllItems(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ListAllItems_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ListAllItems(ctx, req.(*QueryListAllItemsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -182,6 +217,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListItem",
 			Handler:    _Query_ListItem_Handler,
+		},
+		{
+			MethodName: "ListAllItems",
+			Handler:    _Query_ListAllItems_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
